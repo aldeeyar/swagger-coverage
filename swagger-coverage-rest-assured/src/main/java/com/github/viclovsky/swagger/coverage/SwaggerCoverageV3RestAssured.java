@@ -21,6 +21,7 @@ import io.swagger.v3.oas.models.servers.Server;
 
 import java.net.URI;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static com.github.viclovsky.swagger.coverage.SwaggerCoverageConstants.OUTPUT_DIRECTORY;
@@ -60,7 +61,7 @@ public class SwaggerCoverageV3RestAssured implements OrderedFilter {
 
         if (Objects.nonNull(requestSpec.getBody())) {
             MediaType mediaType = new MediaType();
-            mediaType.setSchema(new Schema());
+            mediaType.setSchema(new Schema().properties(new HashMap<>()));
             //Ignore ClassCastException for https://github.com/rest-assured/rest-assured/issues/1232
             try {
                 requestSpec.getFormParams().forEach((n, v) -> mediaType.getSchema().addProperties(n, new Schema().example(v)));
