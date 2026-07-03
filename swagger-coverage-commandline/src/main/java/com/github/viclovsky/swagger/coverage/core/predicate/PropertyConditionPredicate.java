@@ -24,15 +24,20 @@ public abstract class PropertyConditionPredicate extends ConditionPredicate {
                 operation.getRequestBody().getContent().isEmpty()) {
             return false;
         }
+
         Optional<Schema> schema = operation.getRequestBody().getContent().entrySet()
                 .stream()
                 .filter(o -> mediaTypeName.equals(o.getKey()))
                 .map(o -> o.getValue().getSchema())
                 .filter(Objects::nonNull)
-                .flatMap(o -> (Stream<Map.Entry<String, Schema>>) o.getProperties().entrySet().stream())
+                .flatMap(o -> {
+                    Map<String, Schema> properties = o.getProperties();
+                    return properties == null ? Stream.<Map.Entry<String, Schema>>empty() : properties.entrySet().stream();
+                })
                 .filter(o -> propertyName.equals(o.getKey()))
-                .map(o -> o.getValue())
+                .map(Map.Entry::getValue)
                 .findFirst();
+
         return check(schema);
     }
 
